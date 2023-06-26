@@ -1,0 +1,10 @@
+If your connections have a long life, which is probably the case if you use Websocket, then you should refresh them (basically close them and open a new one). 
+This is useful when you do some stuff when the connection is established and if you want the client to be up to date with the server. 
+Or if you want to use another token if it expires soon.
+
+There is no advice here on how to do it because it highly depends on your business logic. 
+Anyway, a good recommendation is to refresh the connection every hour then you can change this interval if necessary.
+
+
+reference:
+https://medium.com/voodoo-engineering/websockets-on-production-with-node-js-bdc82d07bb9f

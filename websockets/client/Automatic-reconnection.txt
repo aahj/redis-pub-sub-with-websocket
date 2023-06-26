@@ -1,0 +1,32 @@
+Some libraries, like WS, do not always provide a mechanism to automatically reconnect to the server. 
+You will probably need this feature if your backend unexpectedly restarts (which can happen after each deployment ;). 
+Here we just need to automatically reconnect the client after it catches a close event.
+
+const WebSocket = require('ws')
+const autoReconnectDelay = 5000
+
+const connectToWSS = () => {
+    const ws = new WebSocket('ws://localhost:8000')
+
+    ws.on('close', () => {
+        ws.terminate()
+        clearTimeout(ws.pingTimeout)
+        setTimeout(() => {
+            ws.removeAllListeners()
+            ws = connectToWSS()
+        }, autoReconnectDelay)
+    })
+
+    ws.on('error', (err) => {
+        if (err.code === 'ECONNREFUSED') {
+            ws.removeAllListeners()
+            ws = (connectToWSS()).ws
+        }
+
+        ws.terminate()
+    })
+    
+    return ws
+}
+
+connectToWSS()

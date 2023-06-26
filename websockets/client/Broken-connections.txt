@@ -1,0 +1,26 @@
+A common issue when you work with WebSocket is broken connections. 
+It appears when one of the endpoints (client or server) does not respond, or when it’s not reachable anymore.
+To manage this we need a logic on both server-side and client-side to gracefully close the connection.
+The idea is very simple: create a kind of heartbeat function to check periodically if a connection is still alive. 
+Otherwise, close the connection.
+
+Client-side:
+
+const WebSocket = require('ws')
+const ws = new WebSocket('ws://localhost:8000')
+
+const heartbeat = (ws, delay) => {
+    clearTimeout(ws.pingTimeout)
+
+    ws.pingTimeout = setTimeout(() => {
+        ws.terminate()
+    }, delay)
+}
+
+const ping = () => { heartbeat(ws, delay) }
+
+ws.on('ping', ping)
+  .on('open', ping)
+  .on('close', () => {
+      clearTimeout(ws.pingTimeout)
+  })

@@ -1,0 +1,15 @@
+JWT based authentication system
+
+JWT is a powerful tool to manage security on API but it works for Websocket based system too. It’s as simple as :
+
+Client-side: add a token in your headers
+Server-side: before each connection, check the token inside headers.
+
+Client-side:
+
+const WebSocket = require('ws')
+const ws = new WebSocket 'ws://localhost:8000', {
+    headers : {
+        token: "myTokenHere"
+    }
+}
